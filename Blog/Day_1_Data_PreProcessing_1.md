@@ -47,6 +47,10 @@ df.iloc[[2,3], [1,2]]
 df.iloc[ : , :-1]
 ```
 
+### pushの時の問題
+同じ端末で複数のgit userが入っています。
+https://teratail.com/questions/73843
+
 ### 参考資料
 https://github.com/Avik-Jain/100-Days-Of-ML-Code/blob/master/Code/Day%201_Data%20PreProcessing.md
 http://ailaby.com/lox_iloc_ix/
