@@ -13,6 +13,8 @@ dataset = pd.read_csv('./Datasets/Data.csv')
 X = dataset.iloc[ : , :-1].values
 Y = dataset.iloc[ : , -1].values
 
+print (dataset)
+
 # データセットXに対し、欠損値を補完する。
 imputer = Imputer(missing_values = "NaN", strategy = "mean", axis = 0)
 imputer = imputer.fit(X[ : , 1:3])
