@@ -1,11 +1,10 @@
-# 3日目単回帰分析　Day 3 Simple Linear Regression
+# 4日目単回帰分析　Day 4 Multiple Linear Regression
 
 本日の目標は
 1. データを取り込む
 2. カテゴリデータの処理
 3. multiple linear regressionのモデルを作成
 4. モデルで予測結果を作成
-4. 図で出力
 
 ## Step 1: データを取り込む
 ```python
@@ -13,7 +12,7 @@ import pandas as pd
 import numpy as np
 
 #5列のデータセットを読み込む
-dataset = pd.read_csv('50_Startups.csv')
+dataset = pd.read_csv('./Datasets/50_Startups.csv')
 # 最後の列以外はXとして格納
 X = dataset.iloc[ : , :-1].values
 # 最後の列はY(1行)として格納
