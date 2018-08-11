@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cross_validation import train_test_split
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 
 #day 3 start
 
@@ -30,3 +31,7 @@ plt.show()
 plt.scatter(X_test , Y_test, color = 'red')
 plt.plot(X_test , regressor.predict(X_test), color ='blue')
 plt.show()
+
+# day 4 追加
+# MSEの計算
+print (mean_squared_error(Y_test, Y_pred))

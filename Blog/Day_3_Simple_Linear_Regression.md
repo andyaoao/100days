@@ -52,11 +52,14 @@ plt.show()
 ## 補足
 ### モデルの精度を検証すべき
 MSEとRMSEでモデルの精度を評価できる。
->MSE:metrics.mean_squared_error(y_train, y_train_pred)
->RMSE:root(metrics.mean_squared_error(y_train, y_train_pred))
+```python
+from sklearn.metrics import mean_squared_error
+mean_squared_error(Y_test, Y_pred)
+mean_squared_error(Y_test, Y_pred)**0.05
+```
 
 ### Feature Scaling
-regressorはScalingの機能を持っているため、処理しなくて済む。
+sklearnのregressorはScalingの機能を持っているため、処理しなくて済む。
 
 ### 参考資料
 using jupyter in ATOM http://hogeai.hatenablog.com/entry/2018/01/20/044158
