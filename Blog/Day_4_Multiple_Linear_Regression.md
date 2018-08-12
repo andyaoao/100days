@@ -1,4 +1,4 @@
-# 4日目単回帰分析　Day 4 Multiple Linear Regression
+# 4日目回帰分析　Day 4 Multiple Linear Regression
 
 本日の目標は
 1. データを取り込む
