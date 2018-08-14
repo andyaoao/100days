@@ -1,4 +1,4 @@
-# 5日目ロジスティック回帰分析　Day 5 Logistics Linear Regression
+# 5日目ロジスティック回帰分析　Day 5 Logistics Linear Regression 1
 
 本日の目標は
 1. データを取り込む
@@ -46,4 +46,4 @@ y_pred = classifier.predict(X_test)
 ロジスティック回帰のアウトプットは0か1(discrete);線形回帰のアウトプットは数値(continuous)。
 
 ### 参考資料
-ロジスティック回帰　https://qiita.com/yshi12/items/3dbd336bd9ff7a426ce9 
+ロジスティック回帰　https://qiita.com/yshi12/items/3dbd336bd9ff7a426ce9
