@@ -24,30 +24,43 @@
 ## Step 3: Codingで実現
 ```python
 
-def train(X, y, W, B, alpha, max_iters):
-    '''
-    Performs GD on all training examples,
-    X: Training data set,
-    y: Labels for training data,
-    W: Weights vector,
-    B: Bias variable,
-    alpha: The learning rate,
-    max_iters: Maximum GD iterations.
-    '''
-    dW = 0 # Weights gradient accumulator
-    dB = 0 # Bias gradient accumulator
-    m = X.shape[0] # No. of training examples
-    for i in range(max_iters):
-        dW = 0 # Reseting the accumulators
-        dB = 0
-        for j in range(m):
-            # 1. Iterate over all examples,
-            # 2. Compute gradients of the weights and biases in w_grad and b_grad,
-            # 3. Update dW by adding w_grad and dB by adding b_grad,
-         W = W - alpha * (dW / m) # Update the weights
-         B = B - alpha * (dB / m) # Update the bias
+# コストの計算を別出し
+def compute_cost(features, values, weight):
+    """
+    Compute the cost of a list of parameters, weight, given a list of features
+    (input data points) and values (output data points).
+    """
+    # テストのデータ数
+    m = len(values)
+    # MSEの合計を計算
+    sum_of_square_errors = np.square(np.dot(features, weight) - values).sum()
+    # コスト（MSEの合計 / テストデータ数の2倍
+    cost = sum_of_square_errors / (2*m)
 
-    return W, B # Return the updated weights and bias.
+    return cost
+
+# gradient descentの計算
+def gradient_descent(features, values, weight, alpha, num_iterations):
+    """
+    Perform gradient descent given a data set with an arbitrary number of features.
+    """
+
+    # コストの推移を記録する
+    cost_history = []
+
+    # training iterationsは実行の回数
+    for i in range(0, num_iterations):
+        # 毎回計算したコストを陣列に保存
+        cost_history.append(compute_cost(features, values, weight))
+        # 関数での計算結果
+        hypothesis = np.dot(features, weight)
+        # 関数の計算結果とテスト数値の差はロスと扱う
+        loss = hypothesis - values
+        # gradientを計算
+        gradient = np.dot(features.transpose(), loss) / len(values)
+        # gradientにより、weightを修正
+        weight = weight - alpha*gradient
+    return weight, cost_history
 ```
 
 ## 補足
