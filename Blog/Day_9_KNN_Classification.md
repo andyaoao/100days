@@ -1,4 +1,4 @@
-# 9日目KNN分類　Day 8 KNN Classification
+# 9日目KNN分類　Day 9 KNN Classification
 
 本日の目標は
 1. データを取り込みから整理まで
