@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
@@ -30,5 +31,23 @@ plt.grid(True)
 
 # グラフの凡例を表示
 plt.legend(loc='upper right')
+
+#day 11 start
+
+fig = plt.figure()  # Figure
+fig.patch.set_facecolor('blue')  # 図全体の背景色
+fig.patch.set_alpha(0.5)  # 図全体の背景透明度
+
+ax = fig.add_subplot(221)  # Axes
+ax.patch.set_facecolor('green')  # subplotの背景色
+ax.patch.set_alpha(0.3)  # subplotの背景透明度
+
+ax = fig.add_subplot(222)  # Axes
+ax.patch.set_facecolor('red')  # subplotの背景色
+ax.patch.set_alpha(0.3)  # subplotの背景透明度
+
+ax = fig.add_subplot(223)  # Axes
+ax.patch.set_facecolor('yellow')  # subplotの背景色
+ax.patch.set_alpha(0.9)  # subplotの背景透明度
 
 plt.show()

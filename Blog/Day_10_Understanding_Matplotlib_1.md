@@ -1,5 +1,7 @@
 # 10日目Matplotlib検証　Day 10 Understanding Matplotlib
 
+本libraryの勉強目的：KNN分類の結果を2Dで描けること
+
 本日の目標は
 1. グラフの種類
 2. グラフの構成
@@ -9,7 +11,7 @@
 ## Step 1: グラフの種類
 plt.plot 線グラフ  
 plt.scatter 散布図  
-plt.bar 棒グラフ
+plt.bar 棒グラフ  
 plt.pie 円グラフ  
 plt.hist histogram  
 
