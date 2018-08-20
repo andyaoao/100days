@@ -6,6 +6,7 @@ from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix
+from sklearn.grid_search import GridSearchCV
 
 #day 12 start
 
@@ -68,7 +69,7 @@ plt.title('SVM (Training set)')
 plt.xlabel('Age')
 plt.ylabel('Estimated Salary')
 plt.legend()
-plt.show()
+# plt.show()
 
 # Test set を図で表現する
 plot_decision_regions(X_test, y_test, classifier=classifier)
@@ -76,4 +77,27 @@ plt.title('SVM (Test set)')
 plt.xlabel('Age')
 plt.ylabel('Estimated Salary')
 plt.legend()
-plt.show()
+# plt.show()
+
+# day 13 start
+
+# 探索するパラメータを設定
+param_grid = [
+    {'C': [1, 10, 100, 1000], 'kernel': ['linear']},
+    {'C': [1, 10, 100, 1000], 'gamma': [0.001, 0.0001], 'kernel': ['rbf']},
+]
+# 評価関数を指定
+scores = ['accuracy', 'precision', 'recall']
+
+# 各評価関数ごとにグリッドサーチを行う
+for score in scores:
+    # SVCをベースでgrid searchを行う
+    clf = GridSearchCV(SVC(C=1), param_grid, cv=5, scoring=score, n_jobs=-1)  # n_jobs: 並列計算を行う（-1 とすれば使用PCで可能な最適数の並列処理を行う）
+    clf.fit(X_train, y_train)
+
+    # 最適なパラメータを表示
+    print (clf.best_estimator_)
+
+
+# grid search後、もう一度最適なパラメータで予測する
+y_pred_1 = clf.predict(X_test)
