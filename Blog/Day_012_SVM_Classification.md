@@ -2,7 +2,7 @@
 
 本日の目標は
 1. データを取り込みから整理まで
-2. multiple linear regressionのモデルを作成
+2. SVMのモデルを作成
 3. モデルで予測結果を作成
 4. cunfusion matrixの作成
 5. SVMの等高線を描く
@@ -30,7 +30,7 @@ X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
 ```
-## Step 2: Logistics linear regressionのモデルを作成
+## Step 2: SVMのモデルを作成
 ```python
 from sklearn.svm import SVC
 
