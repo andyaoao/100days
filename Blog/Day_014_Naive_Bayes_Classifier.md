@@ -46,7 +46,4 @@ print y_pred
 ## 補足
 
 ### 参考資料
-Kernel Trickの説明 https://medium.com/@chih.sheng.huang821/%E6%A9%9F%E5%99%A8%E5%AD%B8%E7%BF%92-kernel-%E5%87%BD%E6%95%B8-47c94095171  
-Kernel Trickの説明 https://chtseng.wordpress.com/2017/02/04/support-vector-machines-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%A9%9F/  
-Grid Searchの実現 https://qiita.com/arata-honda/items/8d08f31aa7d7cbae4c91  
-Grid Searchの実現 https://blog.amedama.jp/entry/2017/09/05/221037  
+Naive Bayesの実装 https://qiita.com/sergeant-wizard/items/13e3f41db570677163fb    
