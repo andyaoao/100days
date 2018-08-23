@@ -1,4 +1,4 @@
-# 14日目D決定木分類　Day 13 Decision Tree Classification
+# 15日目D決定木分類　Day 15 Decision Tree Classification
 
 本日の目標は
 1. データを取り込みから整理まで

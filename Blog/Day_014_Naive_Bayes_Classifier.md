@@ -1,4 +1,4 @@
-# 13日目Grid Searchでパフォーマンスチューニング　Day 13 Grid Search
+# 14日目Naive Bayes 分類機　Day 14 Naive Bayes Classifier
 
 本日の目標は
 1. データを取り込みから整理まで
