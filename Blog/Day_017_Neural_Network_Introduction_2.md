@@ -1,4 +1,4 @@
-# 16日目Neural Network 1　Day 16 Neural Network 1
+# 17日目Neural Network 2　Day 16 Neural Network 2
 
 本日の目標は
 1. データを取り込みから整理まで

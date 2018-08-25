@@ -1,46 +1,11 @@
-import numpy as np
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.tree import DecisionTreeClassifier
-import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
-from sklearn.datasets import load_digits
-import numpy.random as r
+# 18日目Neural Network 3　Day 18 Neural Network 3
 
-# day 16 start
+本日の目標は
+1. トレーニングのプロセスの実装
 
-# numpyが用意しているデータをロード
-digits = load_digits()
-plt.gray()
-plt.matshow(digits.images[2])
-# plt.show()
+## Step 1: トレーニングのプロセスの実装
 
-# 各数値は8X8のpixel(データ)に構成されている
-# 64個0-15の数値がある
-digits.data[0,:]
-
-# Activationには、0-1の数値を使用するので、feature scaling
-X_scale = StandardScaler()
-X = X_scale.fit_transform(digits.data)
-
-# データを分割
-y = digits.target
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4)
-
-# day 17 start
-
-# output layerの設定
-def convert_y_to_vect(y):
-    y_vect = np.zeros((len(y), 10))
-    for i in range(len(y)):
-        y_vect[i, y[i]] = 1
-    return y_vect
-y_v_train = convert_y_to_vect(y_train)
-y_v_test = convert_y_to_vect(y_test)
-# print (y_train[1], y_v_train[1])
-
-
+```python
 # create neural Network
 # 3 layer with 64 30 10 neurons
 nn_structure = [64, 30, 10]
@@ -96,7 +61,7 @@ def calculate_hidden_delta(delta_plus_1, w_l, z_l):
 
 # neural networkのmain function
 # alphaは学習率
-def train_nn(nn_structure, X, y, iter_num=3000, alpha=0.25):
+def train_nn(nn_structure, X, y, iter_num=30, alpha=0.25):
     W, b = setup_and_init_weights(nn_structure)
     cnt = 0
     m = len(y)
@@ -134,3 +99,13 @@ def train_nn(nn_structure, X, y, iter_num=3000, alpha=0.25):
         avg_cost_func.append(avg_cost)
         cnt += 1
     return W, b, avg_cost_func
+
+W, b, avg_cost_func = train_nn(nn_structure, X_train, y_v_train)
+
+```
+
+## 補足
+
+### 参考資料
+Neural Networks Tutorial – A Pathway to Deep Learning   http://adventuresinmachinelearning.com/neural-networks-tutorial/#structure-ann  
+Gradient descent, how neural networks learn | Deep learning, chapter 2  	https://www.youtube.com/watch?v=IHZwWFHWa-w  
