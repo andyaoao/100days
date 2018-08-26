@@ -14,7 +14,7 @@ import numpy.random as r
 digits = load_digits()
 plt.gray()
 plt.matshow(digits.images[2])
-# plt.show()
+plt.show()
 
 # 各数値は8X8のpixel(データ)に構成されている
 # 64個0-15の数値がある
@@ -96,7 +96,7 @@ def calculate_hidden_delta(delta_plus_1, w_l, z_l):
 
 # neural networkのmain function
 # alphaは学習率
-def train_nn(nn_structure, X, y, iter_num=3000, alpha=0.25):
+def train_nn(nn_structure, X, y, iter_num=30, alpha=0.25):
     W, b = setup_and_init_weights(nn_structure)
     cnt = 0
     m = len(y)
@@ -134,3 +134,10 @@ def train_nn(nn_structure, X, y, iter_num=3000, alpha=0.25):
         avg_cost_func.append(avg_cost)
         cnt += 1
     return W, b, avg_cost_func
+
+W, b, avg_cost_func = train_nn(nn_structure, X_train, y_v_train)
+
+plt.plot(avg_cost_func)
+plt.ylabel('Average J')
+plt.xlabel('Iteration number')
+plt.show()
