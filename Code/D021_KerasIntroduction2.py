@@ -79,34 +79,3 @@ plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
 plt.show()
-
-# Functional API
-
-# import matplotlib.pyplot as plt
-# from keras.engine import Model
-# from keras.layers import Input, Dense, Dropout
-# from keras.optimizers import RMSprop
-#
-# # from MnistData import reshapeDataToOneDimension
-#
-# inputs = Input(shape=(784,))
-#
-# nw = Dense(512, activation='relu')(inputs)
-# nw = Dropout(.2)(nw)
-# nw = Dense(512, activation='relu')(nw)
-# nw = Dropout(.2)(nw)
-# predictions = Dense(10, activation='softmax')(nw)
-#
-# model = Model(inputs=inputs, outputs=predictions)
-# model.compile(loss='categorical_crossentropy', optimizer=RMSprop(), metrics=['accuracy'])
-#
-# # (x_train, y_train), (x_test, y_test) = reshapeDataToOneDimension()
-# history = model.fit(x_train, y_train, batch_size=128, epochs=2, verbose=1, validation_data=(x_test, y_test))
-#
-# plt.plot(history.history['acc'])
-# plt.plot(history.history['val_acc'])
-# plt.title('model accuracy')
-# plt.ylabel('accuracy')
-# plt.xlabel('epoch')
-# plt.legend(['train', 'test'], loc='upper left')
-# plt.show()
