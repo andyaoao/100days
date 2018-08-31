@@ -1,8 +1,8 @@
-# 23日目CNN 1 Day23 Convolution Neural Network 1
+# 24日目CNN 2 Day24 Convolution Neural Network 2
 
 本日の目標は
-1. NNとの違い
-2. CNNのロジック理解
+1. 実装してみる
+2.
 
 ## Step 1: NNとの違い
 画像識別を例として、普通のNNだと、少し位置がずれていたりすると判定に大きな影響が出る。  
