@@ -1,42 +1,11 @@
-import numpy as np
-import pandas as pd
-import keras
-from keras.datasets import mnist
-from keras.utils import np_utils
-import matplotlib.pyplot as plt
+# 25日目CNN 3 Day25 Convolution Neural Network 3
 
-# day 23 start
+本日の目標は
+1. CNNのpooling layerの理解、実装(各layerのinput outputを理解)
+2. CNNでtraining、予測を出力
 
-# kerasの内蔵data setを読み込み
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
-
-# インポートしたデータを確認
-fig = plt.figure(figsize=(9,9))
-
-for i in range(36):
-    ax = fig.add_subplot(6, 6, i+1, xticks=[], yticks=[])
-    ax.imshow(x_train[i], cmap='gist_gray')
-
-plt.show()
-
-
-# 配列の形を整理する
-
-# 全ての画像は28*28pixel。普通の画像に3色があるが、今回は白黒のため、軸に1個追加。
-# x_train.shape は画像の個数
-x_Train4D=x_train.reshape(x_train.shape[0],28,28,1).astype('float32')
-x_Test4D=x_test.reshape(x_test.shape[0],28,28,1).astype('float32')
-
-# Avtivationは0-1の数値なので、色の範囲を0-255 -> 0-1に変換
-x_Train4D_normalize = x_Train4D / 255
-x_Test4D_normalize = x_Test4D / 255
-
- # outputの値をコード化
-y_TrainOneHot = np_utils.to_categorical(y_train)
-y_TestOneHot = np_utils.to_categorical(y_test)
-
-# day 24 start
-
+## Step 1: CNNのpooling layerの理解、実装(各layerのinput outputを理解)
+```python
 from keras.models import Sequential
 from keras.layers import Dense,Dropout,Flatten,Conv2D,MaxPooling2D
 
@@ -96,9 +65,12 @@ model.add(Dense(10,activation='softmax'))
 # input: 1764
 # output: 10
 
-print(model.summary())
-
+# モデルをコンパイル
 model.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['accuracy'])
+```
+
+## Step 2: CNNでtraining、予測を出力
+```python
 
 train_history=model.fit(x=x_Train4D_normalize,
                         y=y_TrainOneHot,validation_split=0.2,
@@ -114,3 +86,13 @@ def show_train_history(train_acc,test_acc):
     plt.show()
 
 show_train_history('acc','val_acc')
+```
+
+## 補足
+
+### 参考資料
+Keras CNN 実装  
+https://www.hksilicon.com/articles/1410193  
+http://tekenuko.hatenablog.com/entry/2017/07/23/195321  
+https://qiita.com/sasayabaku/items/9e376ba8e38efe3bcf79  
+https://qiita.com/icoxfog417/items/5fd55fad152231d706c2  
