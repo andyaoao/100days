@@ -11,7 +11,7 @@ tensorflowのtraining processをlog fileに書き込んで、tensorboardに読�
 
 ## Step 2: TensorBoardのコード追加
 ```python
-必要なlibraryをimport
+# 必要なlibraryをimport
 import tensorflow as tf
 import keras.backend.tensorflow_backend
 import keras.callbacks
