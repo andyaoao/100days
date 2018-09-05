@@ -1,4 +1,4 @@
-# 28日目Kmeans Clustering Day28 Kmeans Clustering
+# 28日目Kmeans Clustering 1 Day28 Kmeans Clustering 1
 
 本日の目標は
 1. unsupervised learningの目的を理解する
