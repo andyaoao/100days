@@ -1,4 +1,4 @@
-# 28日目Kmeans Clustering 2 Day28 Kmeans Clustering 2
+# 29日目Kmeans Clustering 2 Day29 Kmeans Clustering 2
 
 本日の目標は
 1. KMeans clusteringを自分で実装してみる
