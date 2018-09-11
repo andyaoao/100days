@@ -1,4 +1,4 @@
-# 33日目 相関ルール 1 Day33 Association Rules Mining 1
+# 34日目 相関ルール 2 Day34 Association Rules Mining 2
 
 本日の目標は
 1. 相関ルールの実装(後半)
