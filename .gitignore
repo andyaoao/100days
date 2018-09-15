@@ -1,3 +1,4 @@
 Datasets/
 logs/
 dags/__pycache__
+data/credentials

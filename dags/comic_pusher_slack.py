@@ -11,26 +11,35 @@ from airflow.operators.slack_operator import SlackAPIPostOperator
 from airflow.operators.latest_only_operator import LatestOnlyOperator
 
 
+# ジョブの実行パラメター
 default_args = {
     'owner': 'Box',
-    'start_date': datetime(2100, 1, 1, 0, 0),
+    # ジョブの開始時間
+    'start_date': datetime(2018, 9, 12, 0, 0),
+    # ジョブの回す頻度
     'schedule_interval': '@daily',
+    # 失敗した時、何回リトライするか
     'retries': 2,
+    # リトライのdelay時間
     'retry_delay': timedelta(minutes=1)
 }
 
+# crawlの目標ページ
 comic_page_template = 'https://www.cartoonmad.com/comic/{}.html'
 
-
+# metadataの更新
 def process_metadata(mode, **context):
 
     file_dir = os.path.dirname(__file__)
+    # metadataをjsonに格納する
     metadata_path = os.path.join(file_dir, '../data/comic.json')
+    # modeはreadの場合、jsonに保存してある情報を読む
     if mode == 'read':
         with open(metadata_path, 'r') as fp:
             metadata = json.load(fp)
             print("Read History loaded: {}".format(metadata))
             return metadata
+    # modeはwriteの場合、jsonに保存してある情報を読む
     elif mode == 'write':
         print("Saving latest comic information..")
         _, all_comic_info = context['task_instance'].xcom_pull(task_ids='check_comic_info')
@@ -102,7 +111,7 @@ def generate_message(**context):
             name = comic_info['name']
             latest = comic_info['latest_chapter_num']
             prev = comic_info['previous_chapter_num']
-            message += '{} 最新一話： {} 話（上次讀到：{} 話）\n'.format(name, latest, prev)
+            message += '{} Newest {} （Previous：{} ）\n'.format(name, latest, prev)
             message += comic_page_template.format(comic_id) + '\n\n'
 
     file_dir = os.path.dirname(__file__)
@@ -160,7 +169,7 @@ with DAG('comic_app_v3', default_args=default_args) as dag:
     send_notification = SlackAPIPostOperator(
         task_id='send_notification',
         token=get_token(),
-        channel='#comic-notification',
+        channel='#random',
         text=get_message_text(),
         icon_url='http://airbnb.io/img/projects/airflow3.png'
     )
