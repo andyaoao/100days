@@ -89,6 +89,7 @@ def check_comic_info(**context):
     if not anything_new:
         print("Nothing new now, prepare to end the workflow.")
 
+    # webdriverを閉じる
     driver.quit()
 
     return anything_new, all_comic_info

@@ -1,3 +1,72 @@
+# 39日目 Slack APP with AirFlow 2 Day38 Slack APP with AirFlow 2
+
+本日の目標は
+1. slack apiの使い方
+2. webdriverの使い方
+3. comic pusher slackの完成
+
+## Step 1: slack apiの使い方
+```python
+# slack apiを通して、slackのchannelにメッセージを送る
+send_notification = SlackAPIPostOperator(
+    task_id='send_notification',
+    # 事前にslack appを作成・権限設定・tokenを取得
+    token=get_token(),
+    # workspaceのどのchannel(app作成の際に、workspaceの指定は必要)
+    channel='#random',
+    text=get_message_text(),
+    icon_url='http://airbnb.io/img/projects/airflow3.png'
+)
+```
+
+## Step 2: webdriverの使い方
+```python
+
+def check_comic_info(**context):
+    # get_read_historyのタスクから、metadataを取得
+    metadata = context['task_instance'].xcom_pull(task_ids='get_read_history')
+    # webdriverを定義
+    driver = webdriver.Chrome()
+    # crawlerの対象を定義
+    driver.get('https://www.cartoonmad.com/')
+    print("Arrived top page.")
+
+    # jsonで格納している情報をall_comic_infoに格納
+    all_comic_info = metadata
+    # 更新フラグをfalseとする
+    anything_new = False
+
+    # 漫画を複数定義される場合、loopで取得する
+    for comic_id, comic_info in dict(all_comic_info).items():
+
+        comic_name = comic_info['name']
+        print("Fetching {}'s chapter list..".format(comic_name))
+        # comic_idは漫画サイトのid
+        driver.get(comic_page_template.format(comic_id))
+
+        # 最新連載の話数を取得
+        links = driver.find_elements_by_partial_link_text('第')
+        latest_chapter_num = [int(s) for s in links[-1].text.split() if s.isdigit()][0]
+        previous_chapter_num = comic_info['previous_chapter_num']
+        all_comic_info[comic_id]['latest_chapter_num'] = latest_chapter_num
+        # 最新かどうかを確認
+        all_comic_info[comic_id]['new_chapter_available'] = latest_chapter_num > previous_chapter_num
+        if all_comic_info[comic_id]['new_chapter_available']:
+            anything_new = True
+            print("There are new chapter for {}(latest: {})".format(comic_name, latest_chapter_num))
+
+    if not anything_new:
+        print("Nothing new now, prepare to end the workflow.")
+
+    # webdriverを閉じる
+    driver.quit()
+
+    return anything_new, all_comic_info
+```
+
+
+## Step 3: comic pusher slackの完成
+```python
 import os
 import time
 import json
@@ -89,6 +158,7 @@ def check_comic_info(**context):
     if not anything_new:
         print("Nothing new now, prepare to end the workflow.")
 
+    # webdriverを閉じる
     driver.quit()
 
     return anything_new, all_comic_info
@@ -194,3 +264,15 @@ with DAG('comic_pusher_slack', default_args=default_args) as dag:
     decide_what_to_do >> generate_notification
     decide_what_to_do >> do_nothing
     generate_notification >> send_notification >> update_read_history
+
+```
+
+### 参考資料
+airflow tutorial (Comic_app)  
+https://leemeng.tw/a-story-about-airflow-and-data-engineering-using-how-to-use-python-to-catch-up-with-latest-comics-as-an-example.html
+https://github.com/leemengtaiwan/gist-evernote#chrome-driver  
+Slack app scope  
+https://github.com/smallwins/slack/issues/67  
+selenium  
+https://qiita.com/yulily@github/items/c3edbe25e84280c17776  
+https://kurozumi.github.io/selenium-python/locating-elements.html  
