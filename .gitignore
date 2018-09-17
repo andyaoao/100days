@@ -2,3 +2,4 @@ Datasets/
 logs/
 dags/__pycache__
 data/credentials
+elasticsearch-6.4.0/
