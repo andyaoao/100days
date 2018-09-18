@@ -3,3 +3,5 @@ logs/
 dags/__pycache__
 data/credentials
 elasticsearch-6.4.0/
+kibana-6.4.0-darwin-x86_64/
+logstash-6.4.0/
