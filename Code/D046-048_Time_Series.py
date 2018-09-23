@@ -35,4 +35,47 @@ sales.date=sales.date.apply(lambda x:datetime.datetime.strptime(x, '%d.%m.%Y'))
 monthly_sales=sales.groupby(["date_block_num","shop_id","item_id"])[
     "date","item_price","item_cnt_day"].agg({"date":["min",'max'],"item_price":"mean","item_cnt_day":"sum"})
 
-print (monthly_sales.head(20))
+# print (monthly_sales.head(20))
+
+# date block numをベースで販売点数を積み上げる
+ts=sales.groupby(["date_block_num"])["item_cnt_day"].sum()
+ts.astype('float')
+plt.figure(figsize=(16,8))
+plt.title('Total Sales of the company')
+plt.xlabel('Time')
+plt.ylabel('Sales')
+plt.plot(ts);
+
+# 移動平均、標準差を確認する
+plt.figure(figsize=(16,6))
+plt.plot(ts.rolling(window=12,center=False).mean(),label='Rolling Mean');
+plt.plot(ts.rolling(window=12,center=False).std(),label='Rolling sd');
+plt.legend();
+
+# trendが明らかにあるので、季節調整を行う
+
+import statsmodels.api as sm
+# multiplicative
+res = sm.tsa.seasonal_decompose(ts.values,freq=12,model="multiplicative")
+#plt.figure(figsize=(16,12))
+fig = res.plot()
+#fig.show()
+
+# Additive model
+res = sm.tsa.seasonal_decompose(ts.values,freq=12,model="additive")
+#plt.figure(figsize=(16,12))
+fig = res.plot()
+#fig.show()
+
+# Stationarity tests
+def test_stationarity(timeseries):
+
+    #Perform Dickey-Fuller test:
+    print('Results of Dickey-Fuller Test:')
+    dftest = adfuller(timeseries, autolag='AIC')
+    dfoutput = pd.Series(dftest[0:4], index=['Test Statistic','p-value','#Lags Used','Number of Observations Used'])
+    for key,value in dftest[4].items():
+        dfoutput['Critical Value (%s)'%key] = value
+    print (dfoutput)
+
+test_stationarity(ts)
