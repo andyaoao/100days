@@ -8,8 +8,8 @@
 
 ## Step 1: 季節調整
 季節調整は時系列データの中、季節成分を除く手法。  
-時系列のデータaddictive modelで解説：観測値 = トレンド成分 + 季節成分 + ノイズ成分  
-時系列のデータmultiplicative modelで解説：観測値 = トレンド成分 * 季節成分 * ノイズ成分  
+時系列のデータaddictive modelで解説：観測値 = トレンド成分 + 季節成分 + 循環成分 + ノイズ成分  
+時系列のデータmultiplicative modelで解説：観測値 = トレンド成分 * 季節成分 * 循環成分 * ノイズ成分  
 
 sm.tsa.seasonal_decomposeの関数で、上記を実現できる。  
 

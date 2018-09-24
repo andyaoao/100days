@@ -67,7 +67,7 @@ res = sm.tsa.seasonal_decompose(ts.values,freq=12,model="additive")
 fig = res.plot()
 #fig.show()
 
-# Stationarity tests
+# 定常過程のテスト(Stationarity tests)
 def test_stationarity(timeseries):
 
     #Perform Dickey-Fuller test:
@@ -79,3 +79,47 @@ def test_stationarity(timeseries):
     print (dfoutput)
 
 test_stationarity(ts)
+# テストの結果、p-value > 0.05 , 定常過程ではない
+
+from pandas import Series as Series
+
+# トレンド成分を削除するfunction
+# 各期との差分を計算
+def difference(dataset, interval=1):
+    diff = list()
+    for i in range(interval, len(dataset)):
+        value = dataset[i] - dataset[i - interval]
+        diff.append(value)
+    return Series(diff)
+
+# 調整前
+ts=sales.groupby(["date_block_num"])["item_cnt_day"].sum()
+ts.astype('float')
+plt.figure(figsize=(16,16))
+plt.subplot(311)
+plt.title('Original')
+plt.xlabel('Time')
+plt.ylabel('Sales')
+plt.plot(ts)
+
+# 1 interval差分調整後
+plt.subplot(312)
+plt.title('After De-trend')
+plt.xlabel('Time')
+plt.ylabel('Sales')
+new_ts=difference(ts)
+plt.plot(new_ts)
+plt.plot()
+
+# 12 interval差分調整後
+plt.subplot(313)
+plt.title('After De-seasonalization')
+plt.xlabel('Time')
+plt.ylabel('Sales')
+new_ts=difference(ts,12)
+plt.plot(new_ts)
+plt.plot()
+
+# 調整後もう一回テストした結果
+test_stationarity(new_ts)
+# テストの結果、p-value < 0.01 , 定常過程
