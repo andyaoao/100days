@@ -1,7 +1,7 @@
-# 49日目 Time Series Data processing 4 Day48 Time Series Data processing 4
+# 49日目 Time Series Data processing 3 Day48 Time Series Data processing 3
 
 本日の目標は
-1. 定常過程の時系列モデルを実装してみる
+1. 定常過程の時系列モデルARを実装してみる
 
 
 ## Step 1: 定常過程の時系列モデルを実装してみる
