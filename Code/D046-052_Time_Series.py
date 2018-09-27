@@ -220,3 +220,53 @@ ma = np.r_[1, betas]
 
 arma22 = smt.arma_generate_sample(ar=ar, ma=ma, nsample=n, burnin=burn)
 _ = tsplot(arma22, lags=max_lag,title="ARMA(2,2) process")
+
+# ARMAモデルパラメータの最適化
+# AIC(Akaike Infomation criterion)指標
+best_aic = np.inf
+best_order = None
+best_mdl = None
+
+# ARとMAのパラメータを5まで設定
+rng = range(5)
+for i in rng:
+    for j in rng:
+        try:
+            # arma22で作成したモデルなので、arma22は最適のはず
+            tmp_mdl = smt.ARMA(arma22, order=(i, j)).fit(method='mle', trend='nc')
+            tmp_aic = tmp_mdl.aic
+            # ベストaic(最小値)を選出
+            if tmp_aic < best_aic:
+                best_aic = tmp_aic
+                best_order = (i, j)
+                best_mdl = tmp_mdl
+        except: continue
+
+print('aic: {:6.5f} | order: {}'.format(best_aic, best_order))
+# ベストaicはARMA(2,2)
+
+best_aic = np.inf
+best_order = None
+best_mdl = None
+
+rng = range(5)
+for i in rng:
+    for j in rng:
+        try:
+            # 売り上げデータを最適ARMAモデルを探す
+            tmp_mdl = smt.ARMA(new_ts.values, order=(i, j)).fit(method='mle', trend='nc')
+            tmp_aic = tmp_mdl.aic
+            if tmp_aic < best_aic:
+                best_aic = tmp_aic
+                best_order = (i, j)
+                best_mdl = tmp_mdl
+        except: continue
+
+
+print('aic: {:6.5f} | order: {}'.format(best_aic, best_order))
+# ベストaicはARMA(1,1)
+
+# 予測
+ts=sales.groupby(["date_block_num"])["item_cnt_day"].sum()
+ts.index=pd.date_range(start = '2013-01-01',end='2015-10-01', freq = 'MS')
+ts=ts.reset_index()
