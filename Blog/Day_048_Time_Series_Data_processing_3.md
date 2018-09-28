@@ -1,4 +1,4 @@
-# 48日目 Time Series Data processing 2 Day48 Time Series Data processing 2
+# 48日目 Time Series Data processing 3 Day48 Time Series Data processing 3
 
 本日の目標は
 1. 定常過程まで調整

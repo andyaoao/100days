@@ -1,4 +1,4 @@
-# 50日目 Time Series Data processing 4 Day48 Time Series Data processing 4
+# 50日目 Time Series Data processing 6 Day48 Time Series Data processing 6
 
 本日の目標は
 1. システム方法で最適ARMAを探す

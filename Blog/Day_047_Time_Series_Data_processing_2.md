@@ -1,4 +1,4 @@
-# 46日目 Time Series Data processing 1 Day46 Time Series Data processing 1
+# 46日目 Time Series Data processing 2 Day46 Time Series Data processing 2
 
 本日の目標は
 1. 季節調整の理解
