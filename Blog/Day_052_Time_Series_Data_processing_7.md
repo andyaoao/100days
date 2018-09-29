@@ -13,7 +13,7 @@ additive時系列モデルをベースで開発されたlibrary。
 3. 週周期、月周期
 4. イベント
 
-## Step 2: ARMAモデルで予測
+## Step 2: Prophetを実装
 
 ```python
 from fbprophet import Prophet
