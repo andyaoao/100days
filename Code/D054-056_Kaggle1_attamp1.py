@@ -64,15 +64,16 @@ model = Prophet('linear', yearly_seasonality=True)
 model.fit(ts)
 
 # 2017/11を予測
-future = model.make_future_dataframe(periods = 5, freq = 'MS')
+future = model.make_future_dataframe(periods = 1, freq = 'MS')
 forecast = model.predict(future)
 forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail()
 
 print ("forecast")
 print (forecast.head())
 
-# 5期を予測したが、2018/11はその第1期
-sales_201411["result"] = sales_201411["percentage"] * forecast["yhat"][0]
+# 2018/11は最後期
+forecast_value = forecast['yhat'].values[-1]
+sales_201411["result"] = sales_201411["percentage"] * forecast_value
 print ("calculation")
 print (sales_201411.head())
 

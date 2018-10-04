@@ -30,13 +30,14 @@ test=pd.read_csv("./Datasets/PredictFutureSales/test.csv")
 # print (sales.info())
 
 # 日付データ型を整理
-sales.date=sales.date.apply(lambda x:datetime.datetime.strptime(x, '%d.%m.%Y'))
-
+# sales.date=sales.date.apply(lambda x:datetime.datetime.strptime(x, '%d.%m.%Y'))
+#
 # 前月のデータを抽出
 # sales_201510 = sales[sales["date_block_num"] == 33]
 # # as_index=Falseは実テーブルのように、一レコード一行で格納
 # # 2015/10の商品別、店舗別の集計
 # sales_201510 = sales_201510.groupby(["date_block_num","item_id","shop_id"], as_index=False).sum()
+# sales_201510 = sales_201510.unstack
 # print ("sales_201510_item")
 # print (sales_201510.head())
 #
@@ -64,40 +65,56 @@ monthly_shop_sales=sales.groupby(["date_block_num","shop_id"])["item_cnt_day"].s
 # unstack関数で、行を列に変換(level 1 )
 monthly_shop_sales=monthly_shop_sales.unstack(level=1)
 monthly_shop_sales=monthly_shop_sales.fillna(0)
-# datesをindexにする方法を調査中
-# monthly_shop_sales.index=dates
-# monthly_shop_sales=monthly_shop_sales.reset_index()
+dates=pd.date_range(start = '2013-01-01',end='2015-10-01', freq = 'MS')
+monthly_shop_sales.index=dates
+monthly_shop_sales=monthly_shop_sales.reset_index()
 print ("monthly_shop_sales")
 print (monthly_shop_sales.head())
 
 
-# 上記で整理したデータをモデル構築する
-start_time=time.time()
-
+# 店舗ごとに時系列データを作る
 forecastsDict = {}
 for node in range(len(monthly_shop_sales)):
 
     nodeToForecast = pd.concat([monthly_shop_sales.iloc[:,0], monthly_shop_sales.iloc[:, node+1]], axis = 1)
-    print ("nodeToForecast")
-    print (nodeToForecast.head())
+    # print ("nodeToForecast")
+    # print (nodeToForecast.head())
     nodeToForecast = nodeToForecast.rename(columns = {nodeToForecast.columns[0] : 'ds'})
     nodeToForecast = nodeToForecast.rename(columns = {nodeToForecast.columns[1] : 'y'})
     growth = 'linear'
+    # mを投入したのは、20130101-20151001の期間
     m = Prophet(growth, yearly_seasonality=True)
     m.fit(nodeToForecast)
+    # futureの出力は、20130101-20151101の期間(periodは1のため、元の系列に1期間追加)
     future = m.make_future_dataframe(periods = 1, freq = 'MS')
     forecastsDict[node] = m.predict(future)
 
-#predictions = np.zeros([len(forecastsDict[0].yhat),1])
-# nCols = len(list(forecastsDict.keys()))+1
-# for key in range(0, nCols-1):
-#     f1 = np.array(forecastsDict[key].yhat)
-#     f2 = f1[:, np.newaxis]
-#     if key==0:
-#         predictions=f2.copy()
-#        # print(predictions.shape)
-#     else:
-#        predictions = np.concatenate((predictions, f2), axis = 1)
+# 全店舗の予測を一つのdfに整理
+predictions = np.zeros([len(forecastsDict[0].yhat),1])
+print ("predictions")
+print (predictions)
+
+# 全てのcolumn数は、
+nCols = len(list(forecastsDict.keys()))+1
+print ("nCols")
+print (nCols)
+
+for key in range(0, nCols-1):
+    f1 = np.array(forecastsDict[key].yhat)
+    f2 = f1[:, np.newaxis]
+    if key==0:
+        predictions=f2.copy()
+       # print(predictions.shape)
+    else:
+       predictions = np.concatenate((predictions, f2), axis = 1)
+
+print ("prediction after")
+print (predictions)
+
+# # 2015/10の売上配分を計算。
+# # 予測を配分。
+
+
 
 #
 #
@@ -143,5 +160,3 @@ for node in range(len(monthly_shop_sales)):
 # # csvに書き出し
 # submission_new.to_csv("./Datasets/PredictFutureSales/submission.csv", index=False)
 #
-# # 2015/10の売上配分を計算。
-# # 予測を配分。
