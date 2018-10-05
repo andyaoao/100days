@@ -30,35 +30,31 @@ test=pd.read_csv("./Datasets/PredictFutureSales/test.csv")
 # print (sales.info())
 
 # 日付データ型を整理
-# sales.date=sales.date.apply(lambda x:datetime.datetime.strptime(x, '%d.%m.%Y'))
-#
+sales.date=sales.date.apply(lambda x:datetime.datetime.strptime(x, '%d.%m.%Y'))
+
 # 前月のデータを抽出
 # sales_201510 = sales[sales["date_block_num"] == 33]
 # # as_index=Falseは実テーブルのように、一レコード一行で格納
 # # 2015/10の商品別、店舗別の集計
-# sales_201510 = sales_201510.groupby(["date_block_num","item_id","shop_id"], as_index=False).sum()
-# sales_201510 = sales_201510.unstack
-# print ("sales_201510_item")
+# sales_201510 = sales_201510.groupby(["shop_id", "item_id"])["item_cnt_day"].sum()
+#
+# print ("sales_201510")
+# print (sales_201510.head())
+#
+# sales_201510 = sales_201510.unstack()
+# sales_201510 = sales_201510.fillna(0)
+# print ("sales_201510_shop")
 # print (sales_201510.head())
 #
 # # 比率を計算する
-# # sum関数で店舗内のpercentageを算出
-# sales_201510["percentage"] = sales_201510["item_cnt_day"] / sales_201510["item_cnt_day"].sum()
-# print ("sales_201510 percentage")
+# sales_201510 = sales_201510.apply(lambda x: x/sum(x))
+# print ("sales_201510_percentage")
 # print (sales_201510.head())
 #
-# # sum関数で店舗内のpercentageを算出
-# sales_201510 = sales_201510.groupby(["date_block_num","item_id"], as_index=False).sum()
-# print ("sales_201510 percentage")
+# sales_201510 = sales_201510.stack()
+# sales_201510 = sales_201510.reset_index()
+# print ("sales_201510_big_table")
 # print (sales_201510.head())
-#
-#
-# # date block num(年月)をベースで全社の販売点数を積上げる
-# ts=sales.groupby(["date_block_num"])["item_cnt_day"].sum()
-# print ("ts")
-# print (ts.head())
-#
-
 
 # 店舗別の売上データを整理する
 monthly_shop_sales=sales.groupby(["date_block_num","shop_id"])["item_cnt_day"].sum()
@@ -108,8 +104,21 @@ for key in range(0, nCols-1):
     else:
        predictions = np.concatenate((predictions, f2), axis = 1)
 
+
+predictions_after=predictions[-1]
+predictions_df = pd.DataFrame({'Column1':predictions_after})
 print ("prediction after")
-print (predictions)
+print (predictions_df)
+
+predictions_df["shop_id"] = predictions_df.index + 1
+print ("predictions_df")
+print (predictions_df)
+
+# percentage calculation
+sales_201510 = pd.merge(sales_201510, predictions_df, left_on=["shop_id"], right_on=["shop_id"], how='left')
+print ("after merge")
+print (sales_201510.head())
+
 
 # # 2015/10の売上配分を計算。
 # # 予測を配分。
