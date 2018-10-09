@@ -70,6 +70,7 @@ print (monthly_shop_sales.head())
 
 
 # 店舗ごとに時系列データを作る
+print ("length of sales is {}".format(len(monthly_shop_sales)))
 forecastsDict = {}
 for node in range(len(monthly_shop_sales)):
 

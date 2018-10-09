@@ -1,3 +1,20 @@
+# 61日目 Prophet 5 Day61 Prophet 5
+
+本日の目標は
+1. 分析案3の仮説を立てる
+2. 分析案3を実装（データ処理の練習）
+
+## Step 1: 分析案2の仮説を立てる
+分析案1、2のパフォーマンスが良くないため、分析案3を立てる。
+
+仮説：売上の変化は点数に影響がない  
+分析案：店舗別商品別の点数の月推移でモデルを構築、2015/11を予測。
+
+ただし、パフォーマンスが良くない。別の方法を考えないといけない。
+
+
+## Step 2: 分析案2を実装（データ処理の練習）
+```python
 import numpy as np
 import pandas as pd
 import random as rd
@@ -107,5 +124,4 @@ submission_new.columns=['ID','item_cnt_month']
 print ("submission")
 print (submission_new.head())
 
-# csvに書き出し
-submission_new.to_csv("./Datasets/PredictFutureSales/submission.csv", index=False)
+```
