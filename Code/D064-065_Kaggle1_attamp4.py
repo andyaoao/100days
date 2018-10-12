@@ -76,6 +76,7 @@ history = model.fit(X_train, y_train, batch_size=4096, epochs=10)
 plt.plot(history.history['loss'], label= 'loss(mse)')
 plt.plot(np.sqrt(history.history['mean_squared_error']), label= 'rmse')
 plt.legend(loc=1)
+plt.show()
 
 LSTM_prediction = model.predict(X_test)
 

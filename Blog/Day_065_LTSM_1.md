@@ -12,7 +12,7 @@ LSTMにはInput Gate、Output Gate、Memory Cell、Forget Gate　四つのコン
 Input Gate: featureより値をinputするとき、inputするかしないかのコントロール  
 Memory Cell: 計算した値を保存  
 Output Gate: 今回の計算値は次のinputとして使うかどうかをコントロール  
-Forget Gate: 今回の計算値を忘れるかどうかおwコントロール  
+Forget Gate: 今回の計算値を忘れるかどうかをコントロール  
 
 
 ##　参考資料
