@@ -1,3 +1,12 @@
+# 65日目 LTSM 1 Day65 LTSM 1
+
+本日の目標は
+1. 分析案5を考案
+2. 分析案5を実装して見る
+
+## Step 1: 時間ー文字列の処理
+strptime：文字列を時間にparse  
+```python
 import time
 import datetime
 
@@ -113,52 +122,11 @@ VALID = True
 LSTM_PARAM = {"batch_size":128,
               "verbose":2,
               "epochs":10}
+```
 
-# modelstart = time.time()
-# if VALID is True:
-#     X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=0.10, random_state=1, shuffle=False)
-#     # del X,y; gc.collect()
-#     print("X Train Shape: ",X_train.shape)
-#     print("X Valid Shape: ",X_valid.shape)
-#     print("y Train Shape: ",y_train.shape)
-#     print("y Valid Shape: ",y_valid.shape)
-#
-#     callbacks_list=[EarlyStopping(monitor="val_loss",min_delta=.001, patience=3,mode='auto')]
-#     hist = model_lstm.fit(X_train, y_train,
-#                           validation_data=(X_valid, y_valid),
-#                           callbacks=callbacks_list,
-#                           **LSTM_PARAM)
-#     pred = model_lstm.predict(test)
-#
-#     # Model Evaluation
-#     best = np.argmin(hist.history["val_loss"])
-#     print("Optimal Epoch: {}",best)
-#     print("Train Score: {}, Validation Score: {}".format(hist.history["loss"][best],hist.history["val_loss"][best]))
-#
-#     plt.plot(hist.history['loss'], label='train')
-#     plt.plot(hist.history['val_loss'], label='validation')
-#     plt.xlabel("Epochs")
-#     plt.ylabel("Mean Square Error")
-#     plt.legend()
-#     plt.show()
-#     plt.savefig("Train and Validation MSE Progression.png")
-#
-# if VALID is False:
-#     print("X Shape: ",X.shape)
-#     print("y Shape: ",y.shape)
-#     hist = model_lstm.fit(X,y,**LSTM_PARAM)
-#     pred = model_lstm.predict(X)
-#
-#     plt.plot(hist.history['loss'], label='Training Loss')
-#     plt.xlabel("Epochs")
-#     plt.ylabel("Mean Square Error")
-#     plt.legend()
-#     plt.show()
-#     plt.savefig("Training Loss Progression.png")
-#
-# print("\Output Submission")
-# submission = pd.DataFrame(pred,columns=['item_cnt_month'])
-# submission.to_csv('submission.csv',index_label='ID')
-# print(submission.head())
-# print("\nModel Runtime: %0.2f Minutes"%((time.time() - modelstart)/60))
-# print("Notebook Runtime: %0.2f Minutes"%((time.time() - notebookstart)/60))
+## Step 2: 分析案5を考案
+priceは考えていないから、LTSMにprice要素を追加
+
+
+##　参考資料
+https://docs.pyq.jp/help/quest/quest_help_strftime_strptime.html  
