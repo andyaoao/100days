@@ -1,3 +1,12 @@
+# 65日目 LTSM 1 Day65 LTSM 1
+
+本日の目標は
+1. 分析案4を考案
+2. 分析案4を実装して見る
+
+## Step 1: 時間ー文字列の処理
+strptime：文字列を時間にparse  
+```python
 import time
 import datetime
 
@@ -162,3 +171,9 @@ submission.to_csv('./Datasets/PredictFutureSales/submission.csv',index_label='ID
 print(submission.head())
 print("\nModel Runtime: %0.2f Minutes"%((time.time() - modelstart)/60))
 print("Notebook Runtime: %0.2f Minutes"%((time.time() - notebookstart)/60))
+```
+
+
+
+##　参考資料
+https://docs.pyq.jp/help/quest/quest_help_strftime_strptime.html  
