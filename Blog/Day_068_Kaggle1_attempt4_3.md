@@ -1,11 +1,9 @@
 # 65日目 LTSM 1 Day65 LTSM 1
 
 本日の目標は
-1. 分析案4を考案
-2. 分析案4を実装して見る
+1. 分析案4を実装して見る
 
-## Step 1: 時間ー文字列の処理
-strptime：文字列を時間にparse  
+## Step 1: 分析案4を実装して見る
 ```python
 import time
 import datetime
@@ -123,7 +121,6 @@ LSTM_PARAM = {"batch_size":128,
               "verbose":2,
               "epochs":10}
 
-modelstart = time.time()
 if VALID is True:
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=0.10, random_state=1, shuffle=False)
     # del X,y; gc.collect()
@@ -169,8 +166,6 @@ print("\Output Submission")
 submission = pd.DataFrame(pred,columns=['item_cnt_month'])
 submission.to_csv('./Datasets/PredictFutureSales/submission.csv',index_label='ID')
 print(submission.head())
-print("\nModel Runtime: %0.2f Minutes"%((time.time() - modelstart)/60))
-print("Notebook Runtime: %0.2f Minutes"%((time.time() - notebookstart)/60))
 ```
 
 

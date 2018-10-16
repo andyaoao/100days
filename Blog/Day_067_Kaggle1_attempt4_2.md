@@ -1,11 +1,9 @@
 # 65日目 LTSM 1 Day65 LTSM 1
 
 本日の目標は
-1. 分析案4を考案
-2. 分析案4を実装して見る
+1. 分析案4を実装して見る
 
-## Step 1: 時間ー文字列の処理
-strptime：文字列を時間にparse  
+## Step 1: 分析案4を実装して見る
 ```python
 import time
 import datetime
