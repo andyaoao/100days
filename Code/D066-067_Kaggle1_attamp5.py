@@ -25,6 +25,18 @@ sub=pd.read_csv("./Datasets/PredictFutureSales/sample_submission.csv")
 shops=pd.read_csv("./Datasets/PredictFutureSales/shops.csv")
 test=pd.read_csv("./Datasets/PredictFutureSales/test.csv")
 
+# データ修正
+sales[sales['item_id'] == 11373][['item_price']].sort_values(['item_price'])
+sales[sales['item_id'] == 11365].sort_values(['item_price'])
+
+# Correct sales values
+sales['item_price'][2909818] = np.nan
+sales['item_cnt_day'][2909818] = np.nan
+sales['item_price'][2909818] = sales[(sales['shop_id'] ==12) & (sales['item_id'] == 11373) & (sales['date_block_num'] == 33)]['item_price'].median()
+sales['item_cnt_day'][2909818] = round(sales[(sales['shop_id'] ==12) & (sales['item_id'] == 11373) & (sales['date_block_num'] == 33)]['item_cnt_day'].median())
+sales['item_price'][885138] = np.nan
+sales['item_price'][885138] = sales[(sales['item_id'] == 11365) & (sales['shop_id'] ==12) & (sales['date_block_num'] == 8)]['item_price'].median()
+
 # 店舗商品ごとの売上、点数(合計)
 df = sales.groupby([sales.date.apply(lambda x: x.strftime('%Y-%m')),'item_id','shop_id']).sum().reset_index()
 print ("df")
@@ -112,7 +124,7 @@ print("\nFit Model")
 VALID = True
 LSTM_PARAM = {"batch_size":128,
               "verbose":2,
-              "epochs":15}
+              "epochs":10}
 
 if VALID is True:
     X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=0.10, random_state=1, shuffle=False)
