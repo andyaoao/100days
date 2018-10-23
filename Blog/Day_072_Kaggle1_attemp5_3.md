@@ -3,8 +3,7 @@
 本日の目標は
 1. Two-level model 実装してみる
 
-
-## Step 1: Feature Engineeringの簡単概念
+## Step 1: Two-level model 実装してみる
 ```python
 Validation = False
 reduce_size = False
