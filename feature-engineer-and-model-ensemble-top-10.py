@@ -168,11 +168,14 @@ for col in tqdm(mean_encoded_col):
     for tr_ind, val_ind in kf.split(col_tr):
         X_tr, X_val = col_tr.iloc[tr_ind], col_tr.iloc[val_ind]
         # id単位のmeanを計算する（shop_idごと、item_idごと）
+        # training setのmeanをvalidation setに適用
         means = X_val[col].map(X_tr.groupby(col)[Target].mean())
+        # print ("means")
+        # print (means)
         X_val[col + '_cnt_month_mean_Kfold'] = means
         col_tr.iloc[val_ind] = X_val
-        print("X_val")
-        print (X_val.head())
+        # print("X_val")
+        # print (X_val.head())
 
     col_tr.fillna(global_mean, inplace = True)
     # 店舗商品ごとの月別買い上げ点数とidのmeanの相関係数
@@ -186,49 +189,32 @@ for col in tqdm(mean_encoded_col):
     col_tr[col + '_target_mean_LOO'] = (col_tr[col + '_cnt_month_sum'] - col_tr[Target]) / (col_tr[col + '_cnt_month_count'] - 1)
     col_tr.fillna(global_mean, inplace = True)
     corrcoefs.loc[col + '_target_mean_LOO'] = np.corrcoef(y_tr, col_tr[col + '_target_mean_LOO'])[0][1]
+    print ("col_tr")
+    print (col_tr)
 
-    # 3.1.3 Mean encodings - Smoothing
-
+    # smoothing
     item_id_target_mean = col_tr.groupby(col)[Target].mean()
     item_id_target_count = col_tr.groupby(col)[Target].count()
     col_tr[col + '_cnt_month_mean'] = col_tr[col].map(item_id_target_mean)
     col_tr[col + '_cnt_month_count'] = col_tr[col].map(item_id_target_count)
     alpha = 100
+    # smoothing の方法はよくわからない
     col_tr[col + '_cnt_month_mean_Smooth'] = (col_tr[col + '_cnt_month_mean'] *  col_tr[col + '_cnt_month_count'] + global_mean * alpha) / (alpha + col_tr[col + '_cnt_month_count'])
     col_tr[col + '_cnt_month_mean_Smooth'].fillna(global_mean, inplace=True)
     corrcoefs.loc[col + '_cnt_month_mean_Smooth'] = np.corrcoef(y_tr, col_tr[col + '_cnt_month_mean_Smooth'])[0][1]
-#
-#
-#
-#
-#
-#     # 3.1.4 Mean encodings - Expanding mean scheme
-#
-#     cumsum = col_tr.groupby(col)[Target].cumsum() - col_tr[Target]
-#
-#     sumcnt = col_tr.groupby(col).cumcount()
-#
-#     col_tr[col + '_cnt_month_mean_Expanding'] = cumsum / sumcnt
-#
-#     col_tr[col + '_cnt_month_mean_Expanding'].fillna(global_mean, inplace=True)
-#
-#     corrcoefs.loc[col + '_cnt_month_mean_Expanding'] = np.corrcoef(y_tr, col_tr[col + '_cnt_month_mean_Expanding'])[0][1]
-#
-#
-#
-#     train = pd.concat([train, col_tr[corrcoefs['Cor'].idxmax()]], axis = 1)
-#
-#     print(corrcoefs.sort_values('Cor'))
-#
-#     print('%0.2f min: Finish encoding %s'%((time.time() - start_time)/60, col))
-#
-#
-#
-# print('%0.2f min: Finish adding mean-encoding'%((time.time() - start_time)/60))
-#
-#
-#
-#
+
+    # target encodingの実装
+    cumsum = col_tr.groupby(col)[Target].cumsum() - col_tr[Target]
+    sumcnt = col_tr.groupby(col).cumcount()
+    col_tr[col + '_cnt_month_mean_Expanding'] = cumsum / sumcnt
+    col_tr[col + '_cnt_month_mean_Expanding'].fillna(global_mean, inplace=True)
+    corrcoefs.loc[col + '_cnt_month_mean_Expanding'] = np.corrcoef(y_tr, col_tr[col + '_cnt_month_mean_Expanding'])[0][1]
+
+    train = pd.concat([train, col_tr[corrcoefs['Cor'].idxmax()]], axis = 1)
+    print(corrcoefs.sort_values('Cor'))
+    print('%0.2f min: Finish encoding %s'%((time.time() - start_time)/60, col))
+
+print('%0.2f min: Finish adding mean-encoding'%((time.time() - start_time)/60))
 #
 # # 2. Feature Engineering -----------------------------------------
 #
