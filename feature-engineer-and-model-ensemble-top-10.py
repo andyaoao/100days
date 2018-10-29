@@ -189,8 +189,8 @@ for col in tqdm(mean_encoded_col):
     col_tr[col + '_target_mean_LOO'] = (col_tr[col + '_cnt_month_sum'] - col_tr[Target]) / (col_tr[col + '_cnt_month_count'] - 1)
     col_tr.fillna(global_mean, inplace = True)
     corrcoefs.loc[col + '_target_mean_LOO'] = np.corrcoef(y_tr, col_tr[col + '_target_mean_LOO'])[0][1]
-    print ("col_tr")
-    print (col_tr)
+    # print ("col_tr")
+    # print (col_tr)
 
     # smoothing
     item_id_target_mean = col_tr.groupby(col)[Target].mean()
@@ -211,7 +211,7 @@ for col in tqdm(mean_encoded_col):
     corrcoefs.loc[col + '_cnt_month_mean_Expanding'] = np.corrcoef(y_tr, col_tr[col + '_cnt_month_mean_Expanding'])[0][1]
 
     train = pd.concat([train, col_tr[corrcoefs['Cor'].idxmax()]], axis = 1)
-    print(corrcoefs.sort_values('Cor'))
+    # print(corrcoefs.sort_values('Cor'))
     print('%0.2f min: Finish encoding %s'%((time.time() - start_time)/60, col))
 
 print('%0.2f min: Finish adding mean-encoding'%((time.time() - start_time)/60))
@@ -224,7 +224,7 @@ if Validation == False:
     # testデータに時間帯区分を追加
     test['date_block_num'] = 34
     all_data = pd.concat([train, test], axis = 0)
-    all_data = all_data.drop(columns = ['ID'])
+    all_data = all_data.drop('ID', axis=1)
 
 else:
     # testデータを使わない
@@ -241,7 +241,7 @@ print('%0.2f min: Start adding lag-based feature'%((time.time() - start_time)/60
 
 index_cols = ['shop_id', 'item_id', 'item_category_id', 'item_cat_id_fix', 'date_block_num']
 cols_to_rename = list(all_data.columns.difference(index_cols))
-print(cols_to_rename)
+# print(cols_to_rename)
 
 # lag periodにより、新しいfeatureを作る
 shift_range = [1, 2, 3, 4, 12]
@@ -292,80 +292,55 @@ print('%0.2f min: Finish getting date features'%((time.time() - start_time)/60))
 
 # 2.4 Scale feature columns --------------------------------------------------------
 
-# from sklearn.preprocessing import StandardScaler
-# train = all_data[all_data['date_block_num']!= all_data['date_block_num'].max()]
-# test = all_data[all_data['date_block_num']== all_data['date_block_num'].max()]
-# sc = StandardScaler()
-#
-# to_drop_cols = ['date_block_num']
-# feature_columns = list(set(lag_cols + index_cols + list(date_columns)).difference(to_drop_cols))
-#
-#
-#
-# train[feature_columns] = sc.fit_transform(train[feature_columns])
-# test[feature_columns] = sc.transform(test[feature_columns])
-# all_data = pd.concat([train, test], axis = 0)
-# all_data = downcast_dtypes(all_data)
-#
-#
-#
-# del train, test, date_features, sale_train
-#
-# gc.collect()
-#
-# print('%0.2f min: Finish scaling features'%((time.time() - start_time)/60))
-#
+from sklearn.preprocessing import StandardScaler
+# 時間帯区分の最後のみtest set
+train = all_data[all_data['date_block_num']!= all_data['date_block_num'].max()]
+test = all_data[all_data['date_block_num']== all_data['date_block_num'].max()]
+sc = StandardScaler()
 
-#
-#
-#
-# # 3. First-level model ------------------------------------------------------------------
-#
-# # Save `date_block_num`, as we can't use them as features, but will need them to split the dataset into parts
-#
-# dates = all_data['date_block_num']
-#
-# last_block = dates.max()
-#
-# print('Test `date_block_num` is %d' % last_block)
-#
-# print(feature_columns)
-#
-#
-#
-# print('%0.2f min: Start training First level models'%((time.time() - start_time)/60))
-#
-# start_first_level_total = time.perf_counter()
-#
-#
-#
-# scoringMethod = 'r2'; from sklearn.metrics import mean_squared_error; from math import sqrt
-#
-#
-#
-#
-#
-# # Train meta-features M = 15 (12 + 15 = 27)
-#
-# months_to_generate_meta_features = range(27,last_block +1)
-#
-# mask = dates.isin(months_to_generate_meta_features)
-#
-# Target = 'item_cnt_month'
-#
-# y_all_level2 = all_data[Target][mask].values
-#
-# X_all_level2 = np.zeros([y_all_level2.shape[0], num_first_level_models])
-#
-#
-#
-#
-#
-# # Now fill `X_train_level2` with metafeatures
-#
-# slice_start = 0
-#
-#
+to_drop_cols = ['date_block_num']
+feature_columns = list(set(lag_cols + index_cols + list(date_columns)).difference(to_drop_cols))
+
+print ("feature_columns")
+print (feature_columns)
+
+train[feature_columns] = sc.fit_transform(train[feature_columns])
+test[feature_columns] = sc.transform(test[feature_columns])
+all_data = pd.concat([train, test], axis = 0)
+all_data = downcast_dtypes(all_data)
+
+del train, test, date_features, sale_train
+gc.collect()
+
+print('%0.2f min: Finish scaling features'%((time.time() - start_time)/60))
+
+# 3. First-level model ------------------------------------------------------------------
+
+# Save `date_block_num`, as we can't use them as features, but will need them to split the dataset into parts
+
+dates = all_data['date_block_num']
+last_block = dates.max()
+
+print('Test `date_block_num` is %d' % last_block)
+print(feature_columns)
+
+print('%0.2f min: Start training First level models'%((time.time() - start_time)/60))
+
+start_first_level_total = time.perf_counter()
+scoringMethod = 'r2'; from sklearn.metrics import mean_squared_error; from math import sqrt
+
+# Train meta-features M = 15 (12 + 15 = 27)
+
+months_to_generate_meta_features = range(27,last_block +1)
+mask = dates.isin(months_to_generate_meta_features)
+Target = 'item_cnt_month'
+y_all_level2 = all_data[Target][mask].values
+X_all_level2 = np.zeros([y_all_level2.shape[0], num_first_level_models])
+
+# Now fill `X_train_level2` with metafeatures
+
+slice_start = 0
+
 #
 # for cur_block_num in tqdm(months_to_generate_meta_features):
 #
