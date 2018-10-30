@@ -341,337 +341,192 @@ X_all_level2 = np.zeros([y_all_level2.shape[0], num_first_level_models])
 
 slice_start = 0
 
-#
-# for cur_block_num in tqdm(months_to_generate_meta_features):
-#
-#
-#
-#     print('-' * 50)
-#
-#     print('Start training for month%d'% cur_block_num)
-#
-#     start_cur_month = time.perf_counter()
-#
-#
-#
-#     cur_X_train = all_data.loc[dates <  cur_block_num][feature_columns]
-#
-#     cur_X_test =  all_data.loc[dates == cur_block_num][feature_columns]
-#
-#
-#
-#     cur_y_train = all_data.loc[dates <  cur_block_num, Target].values
-#
-#     cur_y_test =  all_data.loc[dates == cur_block_num, Target].values
-#
-#
-#
-#     # Create Numpy arrays of train, test and target dataframes to feed into models
-#
-#     train_x = cur_X_train.values
-#
-#     train_y = cur_y_train.ravel()
-#
-#     test_x = cur_X_test.values
-#
-#     test_y = cur_y_test.ravel()
-#
-#
-#
-#     preds = []
-#
-#
-#
-#     from sklearn.linear_model import (LinearRegression, SGDRegressor)
-#
-#     import lightgbm as lgb
-#
-#
-#
-#     sgdr= SGDRegressor(
-#
-#         penalty = 'l2' ,
-#
-#         random_state = SEED )
-#
-#     lgb_params = {
-#
-#                   'feature_fraction': 0.75,
-#
-#                   'metric': 'rmse',
-#
-#                   'nthread':1,
-#
-#                   'min_data_in_leaf': 2**7,
-#
-#                   'bagging_fraction': 0.75,
-#
-#                   'learning_rate': 0.03,
-#
-#                   'objective': 'mse',
-#
-#                   'bagging_seed': 2**7,
-#
-#                   'num_leaves': 2**7,
-#
-#                   'bagging_freq':1,
-#
-#                   'verbose':0
-#
-#                   }
-#
-#
-#
-#     estimators = [sgdr]
-#
-#
-#
-#     for estimator in estimators:
-#
-#         print('Training Model %d: %s'%(len(preds), estimator.__class__.__name__))
-#
-#         start = time.perf_counter()
-#
-#         estimator.fit(train_x, train_y)
-#
-#         pred_test = estimator.predict(test_x)
-#
-#         preds.append(pred_test)
-#
-#         # pred_train = estimator.predict(train_x)
-#
-#         # print('Train RMSE for %s is %f' % (estimator.__class__.__name__, sqrt(mean_squared_error(cur_y_train, pred_train))))
-#
-#         # print('Test RMSE for %s is %f' % (estimator.__class__.__name__, sqrt(mean_squared_error(cur_y_test, pred_test))))
-#
-#         run = time.perf_counter() - start
-#
-#         print('{} runs for {:.2f} seconds.'.format(estimator.__class__.__name__, run))
-#
-#         print()
-#
-#
-#
-#
-#
-#     print('Training Model %d: %s'%(len(preds), 'lightgbm'))
-#
-#     start = time.perf_counter()
-#
-#     estimator = lgb.train(lgb_params, lgb.Dataset(train_x, label=train_y), 300)
-#
-#     pred_test = estimator.predict(test_x)
-#
-#     preds.append(pred_test)
-#
-#     # pred_train = estimator.predict(train_x)
-#
-#     # print('Train RMSE for %s is %f' % ('lightgbm', sqrt(mean_squared_error(cur_y_train, pred_train))))
-#
-#     # print('Test RMSE for %s is %f' % ('lightgbm', sqrt(mean_squared_error(cur_y_test, pred_test))))
-#
-#     run = time.perf_counter() - start
-#
-#     print('{} runs for {:.2f} seconds.'.format('lightgbm', run))
-#
-#     print()
-#
-#
-#
-#
-#
-#     print('Training Model %d: %s'%(len(preds), 'keras'))
-#
-#     start = time.perf_counter()
-#
-#     from keras.models import Sequential
-#
-#     from keras.layers import Dense
-#
-#     from keras.wrappers.scikit_learn import KerasRegressor
-#
-#
-#
-#     def baseline_model():
-#
-#     	# create model
-#
-#         model = Sequential()
-#
-#         model.add(Dense(20, input_dim=train_x.shape[1], kernel_initializer='uniform', activation='softplus'))
-#
-#         model.add(Dense(1, kernel_initializer='uniform', activation = 'relu'))
-#
-#         # Compile model
-#
-#         model.compile(loss='mse', optimizer='Nadam', metrics=['mse'])
-#
-#         # model.compile(loss='mean_squared_error', optimizer='adam')
-#
-#         return model
-#
-#
-#
-#     estimator = KerasRegressor(build_fn=baseline_model, verbose=1, epochs=5, batch_size = 55000)
-#
-#
-#
-#     estimator.fit(train_x, train_y)
-#
-#     pred_test = estimator.predict(test_x)
-#
-#     preds.append(pred_test)
-#
-#
-#
-#     run = time.perf_counter() - start
-#
-#     print('{} runs for {:.2f} seconds.'.format('lightgbm', run))
-#
-#
-#
-#
-#
-#     cur_month_run_total = time.perf_counter() - start_cur_month
-#
-#     print('Total running time was {:.2f} minutes.'.format(cur_month_run_total/60))
-#
-#     print('-' * 50)
-#
-#
-#
-#     slice_end = slice_start + cur_X_test.shape[0]
-#
-#     X_all_level2[ slice_start : slice_end , :] = np.c_[preds].transpose()
-#
-#     slice_start = slice_end
-#
-#
-#
-#
-#
-# # Split train and test
-#
-# test_nrow = len(preds[0])
-#
-# X_train_level2 = X_all_level2[ : -test_nrow, :]
-#
-# X_test_level2 = X_all_level2[ -test_nrow: , :]
-#
-# y_train_level2 = y_all_level2[ : -test_nrow]
-#
-# y_test_level2 = y_all_level2[ -test_nrow : ]
-#
-#
-#
-# print('%0.2f min: Finish training First level models'%((time.perf_counter() - start_first_level_total)/60))
-#
-#
-#
-#
-#
-# # 4. Ensembling -------------------------------------------------------------------
-#
-# pred_list = {}
-#
-#
-#
-# # A. Second level learning model via linear regression
-#
-# print('Training Second level learning model via linear regression')
-#
-#
-#
-# from sklearn.linear_model import (LinearRegression, SGDRegressor)
-#
-# lr = LinearRegression()
-#
-# lr.fit(X_train_level2, y_train_level2)
-#
-# # Compute R-squared on the train and test sets.
-#
-# # print('Train R-squared for %s is %f' %('test_preds_lr_stacking', sqrt(mean_squared_error(y_train_level2, lr.predict(X_train_level2)))))
-#
-# test_preds_lr_stacking = lr.predict(X_test_level2)
-#
-# train_preds_lr_stacking = lr.predict(X_train_level2)
-#
-# print('Train R-squared for %s is %f' %('train_preds_lr_stacking', sqrt(mean_squared_error(y_train_level2, train_preds_lr_stacking))))
-#
-#
-#
-# pred_list['test_preds_lr_stacking'] = test_preds_lr_stacking
-#
-# if Validation:
-#
-#     print('Test R-squared for %s is %f' %('test_preds_lr_stacking', sqrt(mean_squared_error(y_test_level2, test_preds_lr_stacking))))
-#
-#
-#
-#
-#
-# # B. Second level learning model via SGDRegressor
-#
-# print('Training Second level learning model via SGDRegressor')
-#
-# sgdr= SGDRegressor(
-#
-#     penalty = 'l2' ,
-#
-#     random_state = SEED )
-#
-#
-#
-# sgdr.fit(X_train_level2, y_train_level2)
-#
-# # Compute R-squared on the train and test sets.
-#
-# # print('Train R-squared for %s is %f' %('test_preds_lr_stacking', sqrt(mean_squared_error(y_train_level2, lr.predict(X_train_level2)))))
-#
-# test_preds_sgdr_stacking = sgdr.predict(X_test_level2)
-#
-# train_preds_sgdr_stacking = sgdr.predict(X_train_level2)
-#
-# print('Train R-squared for %s is %f' %('train_preds_lr_stacking', sqrt(mean_squared_error(y_train_level2, train_preds_sgdr_stacking))))
-#
-#
-#
-# pred_list['test_preds_sgdr_stacking'] = test_preds_sgdr_stacking
-#
-# if Validation:
-#
-#     print('Test R-squared for %s is %f' %('test_preds_sgdr_stacking', sqrt(mean_squared_error(y_test_level2, test_preds_sgdr_stacking))))
-#
-#
-#
-#
-#
-# print('%0.2f min: Finish training second level model'%((time.time() - start_time)/60))
-#
-#
-#
-#
-#
-#
-#
-# # Submission -------------------------------------------------------------------
-#
-# if not Validation:
-#
-#     submission = pd.read_csv('%s/sample_submission.csv' % data_path)
-#
-#
-#
-#     ver = 6
-#
-#     for pred_ver in ['lr_stacking', 'sgdr_stacking']:
-#
-#         print(pred_list['test_preds_' + pred_ver].clip(0,20).mean())
-#
-#         submission['item_cnt_month'] = pred_list['test_preds_' + pred_ver].clip(0,20)
-#
-#         submission[['ID', 'item_cnt_month']].to_csv('%s/ver%d_%s.csv' % (submission_path, ver, pred_ver), index = False)
-#
-#
-#
-# print('%0.2f min: Finish running scripts'%((time.time() - start_time)/60))
+
+for cur_block_num in tqdm(months_to_generate_meta_features):
+
+    print('-' * 50)
+    print('Start training for month%d'% cur_block_num)
+
+    start_cur_month = time.perf_counter()
+    # 対象時間帯より早いのはtrain setに入れる、対象はtestに入れる
+    cur_X_train = all_data.loc[dates <  cur_block_num][feature_columns]
+    cur_X_test =  all_data.loc[dates == cur_block_num][feature_columns]
+    cur_y_train = all_data.loc[dates <  cur_block_num, Target].values
+    cur_y_test =  all_data.loc[dates == cur_block_num, Target].values
+
+    # Create Numpy arrays of train, test and target dataframes to feed into models
+
+    train_x = cur_X_train.values
+    train_y = cur_y_train.ravel()
+    test_x = cur_X_test.values
+    test_y = cur_y_test.ravel()
+
+    preds = []
+
+    from sklearn.linear_model import (LinearRegression, SGDRegressor)
+    import lightgbm as lgb
+
+    sgdr= SGDRegressor(
+        penalty = 'l2' ,
+        random_state = SEED )
+    lgb_params = {
+                  'feature_fraction': 0.75,
+                  'metric': 'rmse',
+                  'nthread':1,
+                  'min_data_in_leaf': 2**7,
+                  'bagging_fraction': 0.75,
+                  'learning_rate': 0.03,
+                  'objective': 'mse',
+                  'bagging_seed': 2**7,
+                  'num_leaves': 2**7,
+                  'bagging_freq':1,
+                  'verbose':0
+                  }
+
+    estimators = [sgdr]
+
+    for estimator in estimators:
+        print('Training Model %d: %s'%(len(preds), estimator.__class__.__name__))
+
+        start = time.perf_counter()
+        estimator.fit(train_x, train_y)
+        pred_test = estimator.predict(test_x)
+        preds.append(pred_test)
+
+        # pred_train = estimator.predict(train_x)
+        # print('Train RMSE for %s is %f' % (estimator.__class__.__name__, sqrt(mean_squared_error(cur_y_train, pred_train))))
+        # print('Test RMSE for %s is %f' % (estimator.__class__.__name__, sqrt(mean_squared_error(cur_y_test, pred_test))))
+
+        run = time.perf_counter() - start
+
+        print('{} runs for {:.2f} seconds.'.format(estimator.__class__.__name__, run))
+        print()
+
+    print('Training Model %d: %s'%(len(preds), 'lightgbm'))
+
+    start = time.perf_counter()
+
+    estimator = lgb.train(lgb_params, lgb.Dataset(train_x, label=train_y), 300)
+    pred_test = estimator.predict(test_x)
+    preds.append(pred_test)
+
+    # pred_train = estimator.predict(train_x)
+    # print('Train RMSE for %s is %f' % ('lightgbm', sqrt(mean_squared_error(cur_y_train, pred_train))))
+    # print('Test RMSE for %s is %f' % ('lightgbm', sqrt(mean_squared_error(cur_y_test, pred_test))))
+
+    run = time.perf_counter() - start
+    print('{} runs for {:.2f} seconds.'.format('lightgbm', run))
+
+    print()
+
+    print('Training Model %d: %s'%(len(preds), 'keras'))
+
+    start = time.perf_counter()
+
+    from keras.models import Sequential
+    from keras.layers import Dense
+    from keras.wrappers.scikit_learn import KerasRegressor
+
+    def baseline_model():
+    	# create model
+        model = Sequential()
+        model.add(Dense(20, input_dim=train_x.shape[1], kernel_initializer='uniform', activation='softplus'))
+        model.add(Dense(1, kernel_initializer='uniform', activation = 'relu'))
+        # Compile model
+        model.compile(loss='mse', optimizer='Nadam', metrics=['mse'])
+        # model.compile(loss='mean_squared_error', optimizer='adam')
+        return model
+
+    estimator = KerasRegressor(build_fn=baseline_model, verbose=1, epochs=5, batch_size = 55000)
+
+    estimator.fit(train_x, train_y)
+    pred_test = estimator.predict(test_x)
+    preds.append(pred_test)
+
+    run = time.perf_counter() - start
+    print('{} runs for {:.2f} seconds.'.format('lightgbm', run))
+
+    cur_month_run_total = time.perf_counter() - start_cur_month
+
+    print('Total running time was {:.2f} minutes.'.format(cur_month_run_total/60))
+    print('-' * 50)
+
+    slice_end = slice_start + cur_X_test.shape[0]
+    X_all_level2[ slice_start : slice_end , :] = np.c_[preds].transpose()
+    slice_start = slice_end
+
+# Split train and test
+
+test_nrow = len(preds[0])
+X_train_level2 = X_all_level2[ : -test_nrow, :]
+X_test_level2 = X_all_level2[ -test_nrow: , :]
+y_train_level2 = y_all_level2[ : -test_nrow]
+y_test_level2 = y_all_level2[ -test_nrow : ]
+
+print('%0.2f min: Finish training First level models'%((time.perf_counter() - start_first_level_total)/60))
+
+# 4. Ensembling -------------------------------------------------------------------
+
+pred_list = {}
+
+# A. Second level learning model via linear regression
+
+print('Training Second level learning model via linear regression')
+
+from sklearn.linear_model import (LinearRegression, SGDRegressor)
+lr = LinearRegression()
+lr.fit(X_train_level2, y_train_level2)
+
+# Compute R-squared on the train and test sets.
+# print('Train R-squared for %s is %f' %('test_preds_lr_stacking', sqrt(mean_squared_error(y_train_level2, lr.predict(X_train_level2)))))
+
+test_preds_lr_stacking = lr.predict(X_test_level2)
+train_preds_lr_stacking = lr.predict(X_train_level2)
+
+print('Train R-squared for %s is %f' %('train_preds_lr_stacking', sqrt(mean_squared_error(y_train_level2, train_preds_lr_stacking))))
+
+pred_list['test_preds_lr_stacking'] = test_preds_lr_stacking
+
+if Validation:
+    print('Test R-squared for %s is %f' %('test_preds_lr_stacking', sqrt(mean_squared_error(y_test_level2, test_preds_lr_stacking))))
+
+# B. Second level learning model via SGDRegressor
+
+print('Training Second level learning model via SGDRegressor')
+
+sgdr= SGDRegressor(
+    penalty = 'l2' ,
+    random_state = SEED )
+
+sgdr.fit(X_train_level2, y_train_level2)
+
+# Compute R-squared on the train and test sets.
+
+# print('Train R-squared for %s is %f' %('test_preds_lr_stacking', sqrt(mean_squared_error(y_train_level2, lr.predict(X_train_level2)))))
+test_preds_sgdr_stacking = sgdr.predict(X_test_level2)
+train_preds_sgdr_stacking = sgdr.predict(X_train_level2)
+
+print('Train R-squared for %s is %f' %('train_preds_lr_stacking', sqrt(mean_squared_error(y_train_level2, train_preds_sgdr_stacking))))
+
+pred_list['test_preds_sgdr_stacking'] = test_preds_sgdr_stacking
+
+if Validation:
+    print('Test R-squared for %s is %f' %('test_preds_sgdr_stacking', sqrt(mean_squared_error(y_test_level2, test_preds_sgdr_stacking))))
+
+print('%0.2f min: Finish training second level model'%((time.time() - start_time)/60))
+
+# Submission -------------------------------------------------------------------
+
+if not Validation:
+
+    submission = pd.read_csv('%s/sample_submission.csv' % data_path)
+    ver = 6
+
+    for pred_ver in ['lr_stacking', 'sgdr_stacking']:
+
+        print(pred_list['test_preds_' + pred_ver].clip(0,20).mean())
+
+        submission['item_cnt_month'] = pred_list['test_preds_' + pred_ver].clip(0,20)
+        submission[['ID', 'item_cnt_month']].to_csv('%s/ver%d_%s.csv' % (submission_path, ver, pred_ver), index = False)
+
+print('%0.2f min: Finish running scripts'%((time.time() - start_time)/60))
