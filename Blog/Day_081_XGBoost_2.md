@@ -1,9 +1,10 @@
 # 81日目 XGBoost Day81 XGBoost
 
 本日の目標は
-1. XGBoost の実装
+1. XGBoost classifierの実装
 
-## Step 1: XGBoost の実装
+## Step 1: XGBoost classifierの実装
+
 ```python
 # 必要なlibraryをimport
 from xgboost import XGBClassifier
@@ -13,7 +14,7 @@ xgb.fit(X_train, y_train)
 xgb.score(X_test, y_test)
 
 from sklearn.model_selection import RandomizedSearchCV
-# パラメータのリストを設定
+パラメータのリストを設定
 gbm_param_grid = {
     'n_estimators': range(5,20), # ツリーの個数
     'max_depth': range(6,20), # ツリーの深さ
@@ -45,9 +46,8 @@ xgb = XGBClassifier(base_score=0.5, booster='gbtree', colsample_bylevel=1,
        reg_alpha=0, reg_lambda=1, scale_pos_weight=1, seed=None,
        silent=True, subsample=1)
 xgb.fit(X_train, y_train)
-xgb.score(X_test, y_test
-
+xgb.score(X_test, y_test)
 ```
 
-##　参考資料
-パラメター設定方法：　https://blog.csdn.net/han_xiaoyang/article/details/52665396  
+# 参考資料
+# パラメター設定方法：　https://blog.csdn.net/han_xiaoyang/article/details/52665396  
