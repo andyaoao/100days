@@ -1,4 +1,4 @@
-# 85日目 word embedding
+# 85日目 word embedding 1
 
 本日の目標は
 1. word embeddingの目的
