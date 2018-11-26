@@ -1,4 +1,4 @@
-# 87日目 Decision Tree Parameter Tuning 1
+# 87日目 Decision Tree Parameter Tuning 
 
 本日の目標は
 1. 決定木のパラメータチューニングプロセス
